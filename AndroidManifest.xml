@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.romanenco.gitt"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name="com.romanenco.gitt.GittApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.romanenco.gitt.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.romanenco.gitt.GitService" >
+        </service>
+
+        <activity
+            android:name="com.romanenco.gitt.CloneActivity"
+            android:label="@string/title_activity_clone" >
+        </activity>
+        <activity
+            android:name="com.romanenco.gitt.BrowserActivity"
+            android:label="@string/title_activity_browser" >
+        </activity>
+        <activity
+            android:name="com.romanenco.gitt.CodeViewActivity"
+            android:label="@string/title_activity_code_view" >
+        </activity>
+        <activity
+            android:name="com.romanenco.gitt.CheckoutActivity"
+            android:label="@string/title_activity_checkout" >
+        </activity>
+        <activity
+            android:name="com.romanenco.gitt.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
+        <activity
+            android:name="com.romanenco.gitt.TraceActivity"
+            android:label="@string/title_activity_trace" >
+        </activity>
+    </application>
+
+</manifest>

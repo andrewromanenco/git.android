@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/browser_switch_branch"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_change_branch"/>
+    <item
+        android:id="@+id/browser_menu_pull"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_pull_repo"/>
+    <item
+        android:id="@+id/browser_menu_delete"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_delete_repo"/>
+
+</menu>

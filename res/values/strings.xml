@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gitt</string>
+    
+    <string name="action_clone">Clone&#8230;</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_about">About&#8230;</string>
+    
+    <string name="title_activity_clone">Clone GIT repo</string>
+    <string name="edit_repo_name">Repo name</string>
+    <string name="clone_address">http(s)://&#8230;</string>
+    <string name="msg_checking_out">Checking out&#8230;</string>
+    <string name="msg_checking_out_done">Checkout done</string>
+    <string name="msg_checking_out_failes">Checkingout failed</string>
+    <string name="msg_pull_failed">Pull failed</string>
+    <string name="msg_pull_done">Pull done</string>
+    <string name="error_empty">Provide a value</string>
+    <string name="error_duplicate_repo_name">Duplicate name</string>
+    <string name="action_pick_syntax">Pick other syntax</string>
+    <string name="action_pull_repo">Pull from origin</string>
+    <string name="action_delete_repo">Delete local repo</string>
+    <string name="action_change_branch">Switch to &#8230;</string>
+    <string name="confirm_repo_delete">Delete repo from your device?</string>
+    <string name="size_bytes">%d b</string>
+    <string name="size_kb">%s kb</string>
+    <string name="size_mb">%s mb</string>
+    <string name="content_descr_folder">Sub folder</string>
+    <string name="x">  x</string>
+    <string name="passwd_request">Provide password for %s</string>
+    <string name="action_trace">Trace&#8230;</string>
+
+    <string name="git_error_connect">Can\'t connect</string>
+    <string name="git_error_not_git">Not a git repo</string>
+    <string name="git_error_auth">Authorization failed</string>
+    <string name="git_error_generic">Failed. Check stack trace</string>
+    <string name="git_error_head">Not in branch\nCheckout master first</string>
+
+    <string name="no_repos_yet">Use menu to add GIT repo\nfor offline access</string>
+    
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_browser">BrowserActivity</string>
+    <string name="title_activity_code_view">CodeViewActivity</string>
+    <string name="username">User name</string>
+    <string name="password">Password</string>
+    <string name="title_activity_checkout">Checkout branch/tag</string>
+    <string name="title_activity_about">About App</string>
+    <string name="title_activity_trace">StackTrace</string>
+    <string name="last_trace">Last error stack trace:</string>
+    <string name="about_title">Gitt client (beta 1)</string>
+    <string name="about_github">https://github.com/AndrewRomanenco/gitt.android.git</string>
+    <string name="about_email">Andrew@Romanenco.com</string>
+    <string name="about_syntax">Syntax highlighting with http://alexgorbatchev.com/SyntaxHighlighter/</string>
+    <string name="about_jgit">Git engine: JGit</string>
+
+</resources>
