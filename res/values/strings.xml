@@ -52,5 +52,6 @@
     <string name="about_email">Andrew@Romanenco.com</string>
     <string name="about_syntax">Syntax highlighting with http://alexgorbatchev.com/SyntaxHighlighter/</string>
     <string name="about_jgit">Git engine: JGit</string>
+    <string name="about_logo">Git Logo by Jason Long</string>
 
 </resources>
