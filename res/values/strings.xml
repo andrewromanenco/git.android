@@ -38,7 +38,6 @@
 
     <string name="no_repos_yet">Use menu to add GIT repo\nfor offline access</string>
     
-    <string name="action_settings">Settings</string>
     <string name="title_activity_browser">BrowserActivity</string>
     <string name="title_activity_code_view">CodeViewActivity</string>
     <string name="username">User name</string>
