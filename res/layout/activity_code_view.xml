@@ -16,8 +16,23 @@
 
     <ListView
         android:id="@+id/list"
-        android:visibility="gone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/finder_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="#555555"
+        android:visibility="gone" >
+        
+        <Button
+            android:id="@+id/finder_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/x" />
+        
+    </RelativeLayout>
 
 </RelativeLayout>

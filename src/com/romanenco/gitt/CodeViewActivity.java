@@ -62,6 +62,7 @@ public class CodeViewActivity extends Activity {
 
 	private WebView webView;
 	private ListView listView;
+	private View finderBar;
 
 	private BrushesAdapter brushesAdapter;
 
@@ -70,6 +71,16 @@ public class CodeViewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_code_view);
+		finderBar = findViewById(R.id.finder_bar);
+		findViewById(R.id.finder_close).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						finderBar.setVisibility(View.GONE);
+					}
+				});
+		
 		listView = (ListView) findViewById(R.id.list);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -126,6 +137,8 @@ public class CodeViewActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.code_view_action_syntax:
 			askForExplicitBrush();
+		case R.id.code_view_action_find:
+			showFinderBar();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -149,6 +162,7 @@ public class CodeViewActivity extends Activity {
 	private void askForExplicitBrush() {
 		Log.d(TAG, "Ask for specific brush");
 		webView.setVisibility(View.GONE);
+		finderBar.setVisibility(View.GONE);
 		listView.setVisibility(View.VISIBLE);
 	}
 
@@ -209,5 +223,10 @@ public class CodeViewActivity extends Activity {
 		}
 
 	}
+	
+	// Find in source
 
+	private void showFinderBar() {
+		finderBar.setVisibility(View.VISIBLE);
+	}
 }

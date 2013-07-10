@@ -18,6 +18,7 @@
     <string name="error_empty">Provide a value</string>
     <string name="error_duplicate_repo_name">Duplicate name</string>
     <string name="action_pick_syntax">Pick other syntax</string>
+    <string name="action_find">Find in source</string>
     <string name="action_pull_repo">Pull from origin</string>
     <string name="action_delete_repo">Delete local repo</string>
     <string name="action_change_branch">Switch to &#8230;</string>
