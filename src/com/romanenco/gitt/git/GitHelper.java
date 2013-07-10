@@ -67,6 +67,7 @@ public class GitHelper {
 			String password, ProgressMonitor monitor) throws GitError {
 		Log.d(TAG, "Cloning: " + url);
 		CloneCommand clone = Git.cloneRepository();
+		clone.setTimeout(30); // set time out for bad servers
 		clone.setURI(url);
 		clone.setDirectory(new File(localPath));
 		if ((user != null) && (password != null)) {
