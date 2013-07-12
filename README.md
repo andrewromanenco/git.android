@@ -1,7 +1,5 @@
-Gitt - git client for android
+Git client for android
 =============================
-
-Android git client for accessing your source code offline.
 
 https://play.google.com/store/apps/details?id=com.romanenco.gitt
 
@@ -11,6 +9,12 @@ https://play.google.com/store/apps/details?id=com.romanenco.gitt
 - locally checkout branches/tags
 - poll changes from origin
 - source code highlighting
+
+Roadmap
+-------
+
+This is planned to be read only client, but after release I've got many requests to implement basic editor features with push backs. This definitely will be built in future releases.  
+So far, there are  several important features to add for the app to make read-only version more user friendly.
 
 License
 -------

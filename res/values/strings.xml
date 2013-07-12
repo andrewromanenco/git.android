@@ -48,8 +48,8 @@
     <string name="title_activity_about">About App</string>
     <string name="title_activity_trace">StackTrace</string>
     <string name="last_trace">Last error stack trace:</string>
-    <string name="about_title">Gitt client (beta 1)</string>
-    <string name="about_github">https://github.com/AndrewRomanenco/gitt.android.git</string>
+    <string name="about_title">Git client for android. Ver 1.1</string>
+    <string name="about_github">https://github.com/AndrewRomanenco/git.android.git</string>
     <string name="about_email">Andrew@Romanenco.com</string>
     <string name="about_syntax">Syntax highlighting with http://alexgorbatchev.com/SyntaxHighlighter/</string>
     <string name="about_jgit">Git engine: JGit</string>
