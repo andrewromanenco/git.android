@@ -28,6 +28,7 @@
     <string name="size_mb">%s mb</string>
     <string name="content_descr_folder">Sub folder</string>
     <string name="x">  x</string>
+    <string name="empty"></string>
     <string name="passwd_request">Provide password for %s</string>
     <string name="action_trace">Trace&#8230;</string>
 

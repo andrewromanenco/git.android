@@ -28,6 +28,9 @@ import com.romanenco.gitt.R;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +40,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -63,6 +67,7 @@ public class CodeViewActivity extends Activity {
 	private WebView webView;
 	private ListView listView;
 	private View finderBar;
+	private EditText finderText;
 
 	private BrushesAdapter brushesAdapter;
 
@@ -71,6 +76,24 @@ public class CodeViewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_code_view);
+		
+		finderText = (EditText)findViewById(R.id.finder_text);
+		finderText.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				searchInSource(s.toString());
+			}
+
+		});
+		
 		finderBar = findViewById(R.id.finder_bar);
 		findViewById(R.id.finder_close).setOnClickListener(
 				new View.OnClickListener() {
@@ -78,6 +101,24 @@ public class CodeViewActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						finderBar.setVisibility(View.GONE);
+						webView.clearMatches();
+					}
+				});
+		
+		findViewById(R.id.finder_prev).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						webView.findNext(false);
+					}
+				});
+		findViewById(R.id.finder_next).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						webView.findNext(true);
 					}
 				});
 		
@@ -161,9 +202,11 @@ public class CodeViewActivity extends Activity {
 
 	private void askForExplicitBrush() {
 		Log.d(TAG, "Ask for specific brush");
-		webView.setVisibility(View.GONE);
-		finderBar.setVisibility(View.GONE);
 		listView.setVisibility(View.VISIBLE);
+		finderBar.setVisibility(View.GONE);
+		webView.setVisibility(View.GONE);
+		webView.clearMatches();
+		
 	}
 
 	private void applyBrush(int at) {
@@ -228,5 +271,13 @@ public class CodeViewActivity extends Activity {
 
 	private void showFinderBar() {
 		finderBar.setVisibility(View.VISIBLE);
+		if (!TextUtils.isEmpty(finderText.getText().toString())) {
+			searchInSource(finderText.getText().toString());
+		}
+	}
+	
+	private void searchInSource(String text) {
+		webView.findAllAsync(text);
+		
 	}
 }

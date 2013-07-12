@@ -7,32 +7,65 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     tools:context=".CodeViewActivity" >
-
-    <WebView
-        android:id="@+id/web"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="0dp" />
-
+    
     <ListView
         android:id="@+id/list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
-
+    
     <RelativeLayout
         android:id="@+id/finder_bar"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="#555555"
+        android:background="#777777"
         android:visibility="gone" >
         
         <Button
             android:id="@+id/finder_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:text="@string/x" />
         
+        <Button
+            android:id="@+id/finder_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/x" />
+        
+        <Button
+            android:id="@+id/finder_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/finder_next"
+            android:text="@string/x" />
+        
+        <EditText
+            android:id="@+id/finder_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/finder_close"
+            android:layout_toLeftOf="@id/finder_prev"
+            android:layout_centerVertical="true"
+            android:imeOptions="flagNoExtractUi"
+            android:background="@drawable/editsearch"
+            android:padding="3dp"
+            android:textSize="16sp"
+            android:hint="@string/empty"
+            android:singleLine="true" />        
+        
     </RelativeLayout>
+
+    <WebView
+        android:id="@+id/web"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/finder_bar"
+        android:padding="0dp" />
 
 </RelativeLayout>
