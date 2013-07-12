@@ -22,7 +22,9 @@ package com.romanenco.gitt;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.comparator.NameFileComparator;
 
@@ -68,6 +70,12 @@ public class BrowserActivity extends ListActivity {
 	public static final String PATH = "key_path";
 	
 	/**
+	 * We cache last viewed folder for each repo. With no persistence.
+	 * Use this values to handle back button and return to the repo.
+	 */
+	private static Map<String, String> browseCache = new HashMap<String, String>();
+	
+	/**
 	 * Current repo, sent to every next step
 	 */
 	private Repo current;
@@ -85,7 +93,7 @@ public class BrowserActivity extends ListActivity {
 		
 		if (savedInstanceState == null) {
 			current = (Repo)getIntent().getSerializableExtra(REPO);
-			path = getIntent().getStringExtra(PATH);
+			path = browseCache.get(current.getFolder());
 			if (path == null) {
 				path = ".";
 			}
@@ -277,6 +285,7 @@ public class BrowserActivity extends ListActivity {
 		public FileListAdapter(Context context, Repo repo, String folder) {
 			Log.d(TAG, "Reading: " + folder);
 			this.context = context;
+			browseCache.put(repo.getFolder(), folder);
 			File repoDir = new File(context.getFilesDir(), repo.getFolder());
 			File dir = new File(repoDir, folder);
 			File[] files = dir.listFiles();
