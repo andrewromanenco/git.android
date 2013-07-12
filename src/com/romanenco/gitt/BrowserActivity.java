@@ -54,7 +54,7 @@ import android.widget.TextView;
 /**
  * Browse repo checked out to local file system.
  * 
- * Open new instance on folder touch.
+ * Use the same activity instance to browse source tree.
  * Open code viewer on file touch.
  * 
  * @author Andrew Romanenco
@@ -74,7 +74,7 @@ public class BrowserActivity extends ListActivity {
 	
 	/**
 	 * Path to folder to show content from.
-	 * It's relative to Context.getFilesDir().
+	 * It's relative to current repo's root.
 	 */
 	private String path;
 	private FileListAdapter adapter;
@@ -82,48 +82,53 @@ public class BrowserActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		current = (Repo)getIntent().getSerializableExtra(REPO);
-		path = (String)getIntent().getSerializableExtra(PATH);
-		if (path == null) {
-			path = current.getFolder();
+		
+		if (savedInstanceState == null) {
+			current = (Repo)getIntent().getSerializableExtra(REPO);
+			path = getIntent().getStringExtra(PATH);
+			if (path == null) {
+				path = ".";
+			}
+		} else {
+			current = (Repo)savedInstanceState.getSerializable(REPO);
+			path = savedInstanceState.getString(PATH);
 		}
-		setTitleWithPath(path);
-		Log.d(TAG, "Path: " + path);
-		adapter = new FileListAdapter(this, path);
+		
+		updateTitleWithPath();
+		adapter = new FileListAdapter(this, current, path);
 		getListView().setAdapter(adapter);
 	}
 	
-	private void setTitleWithPath(String folderPath) {
-		int index = folderPath.lastIndexOf("/");
+	private void updateTitleWithPath() {
+		int index = path.lastIndexOf("/");
 		if (index == -1) {
 			//reading branch name in main thread...
-			String branch = GitHelper.currentBranchName(this.getFilesDir() + "/" + folderPath); 
+			String branch = GitHelper.currentBranchName(this.getFilesDir() + "/" + current.getFolder()); 
 			this.setTitle("(" + branch + ")/.");
 		} else {
-			this.setTitle(".." + folderPath.substring(index));
+			this.setTitle(".." + path.substring(index));
 		}
 	}
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if (adapter.isFolder(position)) {
-			Intent next = new Intent(this, BrowserActivity.class);
-			next.putExtra(REPO, current);
-			next.putExtra(PATH, path + "/" + adapter.getItem(position));
-			startActivity(next);
+			String step = adapter.getItem(position);
+			if (step.equals("..")) { // browse up
+				int index = path.lastIndexOf("/");
+				path = path.substring(0, index);
+			} else {
+				path += "/" + step;
+			}
+			updateTitleWithPath();
+			adapter = new FileListAdapter(this, current, path);
+			getListView().setAdapter(adapter);
 		} else {
 			Intent next = new Intent(this, CodeViewActivity.class);
-			next.putExtra(CodeViewActivity.FILE_KEY, path + "/" + adapter.getItem(position));
+			Log.d(TAG, path + adapter.getItem(position));
+			next.putExtra(CodeViewActivity.FILE_KEY, path + adapter.getItem(position));
 			startActivity(next);
 		}
-	}
-	
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		current = (Repo)savedInstanceState.getSerializable(REPO);
-		path = (String)savedInstanceState.getSerializable(PATH);
-		setTitleWithPath(path);
 	}
 	
 	@Override
@@ -261,18 +266,29 @@ public class BrowserActivity extends ListActivity {
 		private List<Item> list;
 		private List<String> fileSizes; //size is cached
 
-		public FileListAdapter(Context context, String folder) {
+		/**
+		 * @param context
+		 * @param repo
+		 * @param folder - relative to repo root.
+		 */
+		public FileListAdapter(Context context, Repo repo, String folder) {
 			Log.d(TAG, "Reading: " + folder);
 			this.context = context;
-			File dir = new File(context.getFilesDir(), folder);
+			File repoDir = new File(context.getFilesDir(), repo.getFolder());
+			File dir = new File(repoDir, folder);
 			File[] files = dir.listFiles();
 			Arrays.sort(files, NameFileComparator.NAME_COMPARATOR);
 			list = new ArrayList<Item>();
 			fileSizes = new ArrayList<String>();
+			if (!folder.equals(".")) {
+				list.add(new Item("..", true));
+				fileSizes.add(null);
+			}
 			for (File f: files) {
 				if (".git".equals(f.getName())) continue;
-				list.add(new Item(f.getName(), f.isDirectory()));
-				if (f.isDirectory()) {
+				boolean isDir = f.isDirectory();
+				list.add(new Item(f.getName(), isDir));
+				if (isDir) {
 					fileSizes.add(null);
 				} else {
 					fileSizes.add(Utils.formatFileSize(BrowserActivity.this, f.length()));
