@@ -126,7 +126,10 @@ public class BrowserActivity extends ListActivity {
 		} else {
 			Intent next = new Intent(this, CodeViewActivity.class);
 			Log.d(TAG, path + adapter.getItem(position));
-			next.putExtra(CodeViewActivity.FILE_KEY, path + adapter.getItem(position));
+			File file = new File(this.getFilesDir(), current.getFolder());
+			file = new File(file, path);
+			file = new File(file, adapter.getItem(position));
+			next.putExtra(CodeViewActivity.FILE_KEY, file);
 			startActivity(next);
 		}
 	}

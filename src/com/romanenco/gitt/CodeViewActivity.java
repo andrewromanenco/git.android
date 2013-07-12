@@ -61,7 +61,7 @@ public class CodeViewActivity extends Activity {
 
 	public static final String FILE_KEY = "FILE";
 	public static final String BRUSH_KEY = "BRUSH";
-	private String file;
+	private File file;
 	private String brush;
 
 	private WebView webView;
@@ -139,11 +139,15 @@ public class CodeViewActivity extends Activity {
 		webSettings.setJavaScriptEnabled(true);
 		webSettings.setBuiltInZoomControls(true);
 		webSettings.setUseWideViewPort(true);
-		file = getIntent().getStringExtra(FILE_KEY);
+		file = (File)getIntent().getSerializableExtra(FILE_KEY);
 
 		Log.d(TAG, "Openning: " + file);
-		File f = new File(this.getFilesDir(), file);
-		String name = f.getName();
+		if (file.exists()) {
+			Log.d(TAG, "EXISTS");
+		} else {
+			Log.d(TAG, "NOT EXISTS");
+		}
+		String name = file.getName();
 		this.setTitle(name);
 		String extension = "";
 		int ind = name.lastIndexOf('.');
@@ -152,7 +156,7 @@ public class CodeViewActivity extends Activity {
 		}
 		brush = SyntaxHelper.getBrush(extension);
 		if (savedInstanceState != null) {
-			file = savedInstanceState.getString(FILE_KEY);
+			file = (File)savedInstanceState.getSerializable(FILE_KEY);
 			brush = savedInstanceState.getString(BRUSH_KEY);
 		}
 		if (brush == null) {
@@ -189,11 +193,11 @@ public class CodeViewActivity extends Activity {
 		listView.setVisibility(View.GONE);
 		Log.d(TAG, "Showing with brush: " + brush);
 		if (brush.equals("Image")) {
-			String path = "file://" + this.getFilesDir() + "/" + file;
+			String path = "file://" + file.getAbsolutePath();
 			Log.d(TAG, "Image: " + path);
 			webView.loadUrl(path);
 		} else {
-			String contentPath = this.getFilesDir() + "/" + file;
+			String contentPath = file.getAbsolutePath();
 			String content = SyntaxHelper.getCodeAsHTML(brush, contentPath);
 			webView.loadDataWithBaseURL(SyntaxHelper.baseUrl, content,
 					"text/html", null, null);
@@ -217,7 +221,7 @@ public class CodeViewActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putString(FILE_KEY, file);
+		outState.putSerializable(FILE_KEY, file);
 		outState.putString(BRUSH_KEY, brush);
 	}
 
