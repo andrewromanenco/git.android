@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/browser_filter"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_filter"/>
+    <item
         android:id="@+id/browser_switch_branch"
         android:orderInCategory="100"
         android:showAsAction="never"

@@ -39,8 +39,10 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,11 +87,43 @@ public class BrowserActivity extends ListActivity {
 	 * It's relative to current repo's root.
 	 */
 	private String path;
+	
 	private FileListAdapter adapter;
+	private View filterBar;
+	private EditText filterText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_browse);
+		
+		filterBar = findViewById(R.id.filter_bar);
+		
+		findViewById(R.id.filter_close).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						showFilterBar(false);
+					}
+				});
+		
+		filterText = (EditText)findViewById(R.id.filter_text);
+		filterText.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				adapter.reFilter(s.toString());
+			}
+
+		});
 		
 		if (savedInstanceState == null) {
 			current = (Repo)getIntent().getSerializableExtra(REPO);
@@ -104,6 +138,7 @@ public class BrowserActivity extends ListActivity {
 		
 		updateTitleWithPath();
 		adapter = new FileListAdapter(this, current, path);
+		Log.d(TAG, "xx " + getListView());
 		getListView().setAdapter(adapter);
 	}
 	
@@ -129,6 +164,7 @@ public class BrowserActivity extends ListActivity {
 				path += "/" + step;
 			}
 			updateTitleWithPath();
+			showFilterBar(false);
 			adapter = new FileListAdapter(this, current, path);
 			getListView().setAdapter(adapter);
 		} else {
@@ -168,6 +204,9 @@ public class BrowserActivity extends ListActivity {
 			break;
 		case R.id.browser_menu_pull:
 			pullFromOrigin();
+			break;
+		case R.id.browser_filter:
+			showFilterBar(true);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -263,6 +302,16 @@ public class BrowserActivity extends ListActivity {
 		}
 		
 	}
+	
+	private void showFilterBar(boolean show) {
+		if (show) {
+			filterBar.setVisibility(View.VISIBLE);
+			filterText.setText("");
+		} else {
+			filterBar.setVisibility(View.GONE);
+			if (adapter != null) adapter.reFilter(null);
+		}
+	}
 
 	/**
 	 * List data source.
@@ -274,8 +323,10 @@ public class BrowserActivity extends ListActivity {
 	class FileListAdapter extends BaseAdapter {
 		
 		private Context context;
-		private List<Item> list;
-		private List<String> fileSizes; //size is cached
+		private List<Item> allItems;
+		private Map<String, String> fileSizes; //size is cached
+		
+		private List<Item> filteredList;
 
 		/**
 		 * @param context
@@ -290,33 +341,50 @@ public class BrowserActivity extends ListActivity {
 			File dir = new File(repoDir, folder);
 			File[] files = dir.listFiles();
 			Arrays.sort(files, NameFileComparator.NAME_COMPARATOR);
-			list = new ArrayList<Item>();
-			fileSizes = new ArrayList<String>();
+			allItems = new ArrayList<Item>();
+			fileSizes = new HashMap<String, String>();
 			if (!folder.equals(".")) {
-				list.add(new Item("..", true));
-				fileSizes.add(null);
+				allItems.add(new Item("..", true));
 			}
 			for (File f: files) {
 				if (".git".equals(f.getName())) continue;
 				boolean isDir = f.isDirectory();
-				list.add(new Item(f.getName(), isDir));
-				if (isDir) {
-					fileSizes.add(null);
-				} else {
-					fileSizes.add(Utils.formatFileSize(BrowserActivity.this, f.length()));
+				allItems.add(new Item(f.getName(), isDir));
+				if (!isDir) {
+					fileSizes.put(f.getName(), Utils.formatFileSize(BrowserActivity.this, f.length()));
 				}
 			}
-			
+			filteredList = allItems;
+		}
+		
+		private void reFilter(String pattern) {
+			Log.d(TAG, "REFILTER");
+			if (TextUtils.isEmpty(pattern)) {
+				filteredList = allItems;
+				Log.d(TAG, "ALL " + filteredList);
+			} else {
+				filteredList = new ArrayList<Item>();
+				if ((allItems.size() > 0)&&allItems.get(0).name.equals("..")) {
+					filteredList.add(allItems.get(0));
+				}
+				pattern = pattern.toLowerCase();
+				for (Item item: allItems) {
+					if (item.name.toLowerCase().indexOf(pattern) > -1) {
+						filteredList.add(item);
+					}
+				}
+			}
+			this.notifyDataSetChanged();
 		}
 
 		@Override
 		public int getCount() {
-			return list.size();
+			return filteredList.size();
 		}
 
 		@Override
 		public String getItem(int position) {
-			return list.get(position).name;
+			return filteredList.get(position).name;
 		}
 		
 		public String getItemSize(int position) {
@@ -325,12 +393,12 @@ public class BrowserActivity extends ListActivity {
 
 		@Override
 		public long getItemId(int position) {
-			return list.get(position).name.hashCode();
+			return filteredList.get(position).name.hashCode();
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Item item = list.get(position);
+			Item item = filteredList.get(position);
 			if (convertView == null) {
 				LayoutInflater inflater = LayoutInflater.from(context);
 				convertView = inflater.inflate(R.layout.item_row, parent, false);
@@ -344,13 +412,13 @@ public class BrowserActivity extends ListActivity {
 				size.setText("");
 			} else {
 				type.setVisibility(View.INVISIBLE);
-				size.setText(fileSizes.get(position));
+				size.setText(fileSizes.get(item.name));
 			}
 			return convertView;
 		}
 		
 		public boolean isFolder(int index) {
-			return list.get(index).isFolder;
+			return filteredList.get(index).isFolder;
 		}
 		
 		private class Item {

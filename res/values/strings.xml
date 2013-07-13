@@ -22,6 +22,7 @@
     <string name="action_pull_repo">Pull from origin</string>
     <string name="action_delete_repo">Delete local repo</string>
     <string name="action_change_branch">Switch to &#8230;</string>
+    <string name="action_filter">Filter files</string>
     <string name="confirm_repo_delete">Delete repo from your device?</string>
     <string name="size_bytes">%d b</string>
     <string name="size_kb">%s kb</string>
