@@ -54,6 +54,10 @@
             android:name="com.romanenco.gitt.TraceActivity"
             android:label="@string/title_activity_trace" >
         </activity>
+        <activity
+            android:name="com.romanenco.gitt.SyntaxPickActivity"
+            android:label="@string/title_activity_syntax" >
+        </activity>
     </application>
 
 </manifest>

@@ -6,14 +6,8 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
-    tools:context=".CodeViewActivity" >
-    
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-    
+    tools:context=".CodeViewActivity" >    
+
     <RelativeLayout
         android:id="@+id/finder_bar"
         android:layout_width="fill_parent"

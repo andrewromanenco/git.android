@@ -28,6 +28,7 @@ import com.romanenco.gitt.R;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -35,14 +36,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * Shows file content in WebView with syntax highlighting.
@@ -65,11 +61,8 @@ public class CodeViewActivity extends Activity {
 	private String brush;
 
 	private WebView webView;
-	private ListView listView;
 	private View finderBar;
 	private EditText finderText;
-
-	private BrushesAdapter brushesAdapter;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -122,18 +115,6 @@ public class CodeViewActivity extends Activity {
 					}
 				});
 		
-		listView = (ListView) findViewById(R.id.list);
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> data, View view, int at,
-					long id) {
-				applyBrush(at);
-			}
-		});
-
-		brushesAdapter = new BrushesAdapter();
-		listView.setAdapter(brushesAdapter);
 		webView = (WebView) findViewById(R.id.web);
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
@@ -142,11 +123,6 @@ public class CodeViewActivity extends Activity {
 		file = (File)getIntent().getSerializableExtra(FILE_KEY);
 
 		Log.d(TAG, "Openning: " + file);
-		if (file.exists()) {
-			Log.d(TAG, "EXISTS");
-		} else {
-			Log.d(TAG, "NOT EXISTS");
-		}
 		String name = file.getName();
 		this.setTitle(name);
 		String extension = "";
@@ -182,15 +158,16 @@ public class CodeViewActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.code_view_action_syntax:
 			askForExplicitBrush();
+			break;
 		case R.id.code_view_action_find:
 			showFinderBar();
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	private void loadFileContent() {
 		webView.setVisibility(View.VISIBLE);
-		listView.setVisibility(View.GONE);
 		Log.d(TAG, "Showing with brush: " + brush);
 		if (brush.equals("Image")) {
 			String path = "file://" + file.getAbsolutePath();
@@ -206,16 +183,25 @@ public class CodeViewActivity extends Activity {
 
 	private void askForExplicitBrush() {
 		Log.d(TAG, "Ask for specific brush");
-		listView.setVisibility(View.VISIBLE);
 		finderBar.setVisibility(View.GONE);
-		webView.setVisibility(View.GONE);
 		webView.clearMatches();
-		
+		Intent intent = new Intent(this, SyntaxPickActivity.class);
+		startActivityForResult(intent, 1);
 	}
-
-	private void applyBrush(int at) {
-		brush = brushesAdapter.getItem(at);
-		loadFileContent();
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 1) {
+			if (resultCode == RESULT_OK) {
+				int index = data.getIntExtra(SyntaxPickActivity.BRUSH_INDEX, 0);
+				brush = SyntaxHelper.mapping[index][0];
+				Log.d(TAG, "Picked: " + brush);
+				loadFileContent();
+			} else {
+				finish(); // if nothing was picked, no need to show source code
+			}
+		}
 	}
 
 	@Override
@@ -223,52 +209,6 @@ public class CodeViewActivity extends Activity {
 		super.onSaveInstanceState(outState);
 		outState.putSerializable(FILE_KEY, file);
 		outState.putString(BRUSH_KEY, brush);
-	}
-
-	/**
-	 * Use Syntax helper as source for all possible brushes.
-	 * 
-	 * @author Andrew Romanenco
-	 * 
-	 */
-	class BrushesAdapter extends BaseAdapter {
-
-		private final int padding_dp = 20;
-		private final int padding_px;
-
-		public BrushesAdapter() {
-			float scale = CodeViewActivity.this.getResources()
-					.getDisplayMetrics().density;
-			padding_px = (int) (padding_dp * scale + 0.5f);
-		}
-
-		@Override
-		public int getCount() {
-			return SyntaxHelper.mapping.length;
-		}
-
-		@Override
-		public String getItem(int at) {
-			return SyntaxHelper.mapping[at][0];
-		}
-
-		@Override
-		public long getItemId(int at) {
-			return SyntaxHelper.mapping[at][0].hashCode();
-		}
-
-		@Override
-		public View getView(int at, View view, ViewGroup parent) {
-			if (view == null) {
-				view = new TextView(CodeViewActivity.this);
-				view.setPadding(padding_px, padding_px, padding_px, padding_px);
-				((TextView) view).setTextAppearance(CodeViewActivity.this,
-						android.R.attr.textAppearanceMedium);
-			}
-			((TextView) view).setText(SyntaxHelper.mapping[at][0]);
-			return view;
-		}
-
 	}
 	
 	// Find in source
