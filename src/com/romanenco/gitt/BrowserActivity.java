@@ -138,7 +138,6 @@ public class BrowserActivity extends ListActivity {
 		
 		updateTitleWithPath();
 		adapter = new FileListAdapter(this, current, path);
-		Log.d(TAG, "xx " + getListView());
 		getListView().setAdapter(adapter);
 	}
 	
@@ -169,7 +168,6 @@ public class BrowserActivity extends ListActivity {
 			getListView().setAdapter(adapter);
 		} else {
 			Intent next = new Intent(this, CodeViewActivity.class);
-			Log.d(TAG, path + adapter.getItem(position));
 			File file = new File(this.getFilesDir(), current.getFolder());
 			file = new File(file, path);
 			file = new File(file, adapter.getItem(position));
@@ -358,10 +356,8 @@ public class BrowserActivity extends ListActivity {
 		}
 		
 		private void reFilter(String pattern) {
-			Log.d(TAG, "REFILTER");
 			if (TextUtils.isEmpty(pattern)) {
 				filteredList = allItems;
-				Log.d(TAG, "ALL " + filteredList);
 			} else {
 				filteredList = new ArrayList<Item>();
 				if ((allItems.size() > 0)&&allItems.get(0).name.equals("..")) {
