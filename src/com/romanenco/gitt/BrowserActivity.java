@@ -71,6 +71,8 @@ public class BrowserActivity extends ListActivity {
 	public static final String REPO = "key_repo";
 	public static final String PATH = "key_path";
 	
+	private static final String FILTER = "filterbar.visibility";
+	
 	/**
 	 * We cache last viewed folder for each repo. With no persistence.
 	 * Use this values to handle back button and return to the repo.
@@ -134,6 +136,7 @@ public class BrowserActivity extends ListActivity {
 		} else {
 			current = (Repo)savedInstanceState.getSerializable(REPO);
 			path = savedInstanceState.getString(PATH);
+			filterBar.setVisibility(savedInstanceState.getInt(FILTER));
 		}
 		
 		updateTitleWithPath();
@@ -181,6 +184,7 @@ public class BrowserActivity extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putSerializable(REPO, current);
 		outState.putSerializable(PATH, path);
+		outState.putInt(FILTER, filterBar.getVisibility());
 	}
 
 	@Override
