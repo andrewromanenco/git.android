@@ -16,6 +16,7 @@
     <string name="msg_pull_failed">Pull failed</string>
     <string name="msg_pull_done">Pull done</string>
     <string name="error_empty">Provide a value</string>
+    <string name="error_http">Should start with http:// or https://</string>
     <string name="error_duplicate_repo_name">Duplicate name</string>
     <string name="action_pick_syntax">Pick other syntax</string>
     <string name="title_activity_syntax">Pick syntax</string>

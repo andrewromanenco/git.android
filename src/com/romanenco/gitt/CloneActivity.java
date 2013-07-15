@@ -141,6 +141,12 @@ public class CloneActivity extends Activity {
 			userNameView.requestFocus();
 			return;
 		}
+		
+		if (!address.startsWith("http://") && (!address.startsWith("https://"))) {
+			addressView.setError(getString(R.string.error_http));
+			addressView.requestFocus();
+			return;
+		}
 
 		DAO dao = new DAO(this);
 		dao.open(true);
