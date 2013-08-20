@@ -162,7 +162,13 @@ public class GitService extends IntentService {
 		} catch (NotGitRepoError e) {
 			Log.e(TAG, "Not a git repo");
 			repo.setState(Repo.State.Error);
-			repo.setError(getString(R.string.git_error_not_git));
+			// issue-12
+			String lcAddress = repo.getAddress().toLowerCase();
+			if (!lcAddress.endsWith(".git")) {
+				repo.setError(getString(R.string.git_error_not_git_guess));
+			} else {
+				repo.setError(getString(R.string.git_error_not_git));
+			}
 		} catch (AuthFailError e) {
 			Log.e(TAG, "Not authorised");
 			repo.setState(Repo.State.Error);

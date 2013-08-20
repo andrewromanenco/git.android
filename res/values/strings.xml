@@ -37,6 +37,7 @@
 
     <string name="git_error_connect">Can\'t connect</string>
     <string name="git_error_not_git">Not a git repo</string>
+    <string name="git_error_not_git_guess">Not a git repo. Try with .git at the url end.</string>
     <string name="git_error_auth">Authorization failed</string>
     <string name="git_error_generic">Failed. Check stack trace</string>
     <string name="git_error_head">Not in branch\nCheckout master first</string>
