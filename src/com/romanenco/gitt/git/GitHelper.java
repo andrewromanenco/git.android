@@ -21,14 +21,15 @@ package com.romanenco.gitt.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
-import org.eclipse.jgit.api.ListTagCommand;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.errors.DetachedHeadException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -137,20 +138,21 @@ public class GitHelper {
 			String name = git.getRepository().getBranch();
 			
 			if (name.length() == 40) {
-				//this could be tag's ref name
-				ListTagCommand getTagsCmd = git.tagList();
-				List<Ref> tags = getTagsCmd.call();
-				for (Ref r: tags) {
-					if (name.equals(r.getObjectId().getName())) {
-						name = r.getName();
-						break;
+				//detached head processing
+				Map<String, Ref> refs = git.add().getRepository().getAllRefs();
+				Iterator<Entry<String, Ref>> iter = refs.entrySet().iterator();
+				while (iter.hasNext()) {
+					Entry<String, Ref> entry = iter.next();
+					if (entry.getValue().getObjectId().getName().equals(name)) {
+						if (!entry.getKey().equals("HEAD")) { // so bad, will change later...
+							name = entry.getKey();
+							break;
+						}
 					}
 				}
 			}
 			return nameReFormat(name);
 		} catch (IOException e) {
-			GittApp.saveErrorTrace(e);
-		} catch (GitAPIException e) {
 			GittApp.saveErrorTrace(e);
 		}
 		return null;
@@ -163,21 +165,15 @@ public class GitHelper {
 	 * @param tags
 	 * @param path
 	 */
-	public static void readBranchesAndTags(List<String> branches, List<String> tags, String localPath) {
-		if ((branches == null)||(tags == null)) return;
+	public static void readBranchesAndTags(List<String> refs, String localPath) {
+		if (refs == null) return;
 		try {
 			Git git = Git.open(new File(localPath));
 			
-			ListTagCommand getTagsCmd = git.tagList();
-			List<Ref> repoTags = getTagsCmd.call();
-			for (Ref r: repoTags) {
-				tags.add(nameReFormat(r.getName()));
-			}
-			
-			ListBranchCommand getBranchesCmd = git.branchList();
-			List<Ref> repoBranches = getBranchesCmd.call();
-			for (Ref r: repoBranches) {
-				branches.add(nameReFormat(r.getName()));
+			Map<String, Ref> mm = git.getRepository().getAllRefs();
+			for (String name: mm.keySet()) {
+				if (name.equals("HEAD")||name.startsWith("refs/heads/")) continue;
+				refs.add(name);
 			}
 
 		} catch (Exception e) {

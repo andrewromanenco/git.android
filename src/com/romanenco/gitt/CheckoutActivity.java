@@ -27,6 +27,7 @@ import com.romanenco.gitt.dao.Repo;
 import com.romanenco.gitt.git.GitHelper;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -61,6 +62,8 @@ public class CheckoutActivity extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView lv, View view, int position, long id) {
+		String ref = adapter.getItem(position);
+		Log.d(TAG, "Checking out: " + ref);
 		DAO dao = new DAO(this);
 		dao.open(true);
 		repo.setState(Repo.State.Busy);
@@ -71,7 +74,7 @@ public class CheckoutActivity extends ListActivity {
 		Intent co = new Intent(this, GitService.class);
 		co.putExtra(GitService.COMMAND, GitService.Command.Checkout);
 		co.putExtra(GitService.REPO, repo);
-		co.putExtra(GitService.SWITCH_TO, adapter.getItem(position));
+		co.putExtra(GitService.SWITCH_TO, ref);
 		startService(co);
 		Intent back = new Intent(this, MainActivity.class);
 		back.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -91,13 +94,9 @@ public class CheckoutActivity extends ListActivity {
 					.getDisplayMetrics().density;
 			padding_px = (int) (padding_dp * scale + 0.5f);
 
-			List<String> branches = new ArrayList<String>();
-			List<String> tags = new ArrayList<String>();
-			GitHelper.readBranchesAndTags(branches, tags, getFilesDir() + "/"
+			list = new ArrayList<String>();
+			GitHelper.readBranchesAndTags(list, getFilesDir() + "/"
 					+ repo.getFolder());
-			list = new ArrayList<String>(branches.size() + tags.size());
-			list.addAll(branches);
-			list.addAll(tags);
 		}
 
 		@Override
@@ -123,8 +122,20 @@ public class CheckoutActivity extends ListActivity {
 				((TextView) view).setTextAppearance(CheckoutActivity.this,
 						android.R.attr.textAppearanceMedium);
 			}
-			((TextView) view).setText(list.get(at));
+			String ref = list.get(at);
+			((TextView) view).setText(friendlyRefName(ref));
 			return view;
+		}
+
+		private CharSequence friendlyRefName(String ref) {
+			if (ref.startsWith("refs/tags/")) {
+				return ref.substring(5);
+			}
+			int index = ref.lastIndexOf("/");
+			if (index > 0) {
+				return ref.substring(++index);
+			}
+			return ref;
 		}
 
 	}
