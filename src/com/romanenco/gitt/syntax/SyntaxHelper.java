@@ -72,7 +72,7 @@ public class SyntaxHelper {
 		{Bash, "bash", "sh"},
 		{CSharp,"cs"},
 		{ColdFusion},
-		{Cpp, "m", "h", "cpp", "c"},
+		{Cpp, "m", "h", "cpp", "c", "cc", "hpp"},
 		{Css, "css"},
 		{Delphi, "pas"},
 		{Diff, "diff"},
