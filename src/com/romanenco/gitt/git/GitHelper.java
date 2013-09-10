@@ -21,6 +21,10 @@ package com.romanenco.gitt.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +39,12 @@ import org.eclipse.jgit.api.errors.DetachedHeadException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.NotSupportedException;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import android.util.Log;
@@ -276,6 +282,68 @@ public class GitHelper {
 			}
 		}
 		throw new GitError();
+	}
+	
+	/**
+	 * Read log messages, up to maxRecords
+	 * 
+	 * @param repoPath
+	 * @param maxRecords
+	 * @return
+	 */
+	public static List<LogEntry> readRepoHistory(String repoPath, int maxRecords) {
+		ArrayList<LogEntry> result = new ArrayList<GitHelper.LogEntry>(maxRecords);
+		try {
+			Git git = Git.open(new File(repoPath));
+			Iterable<RevCommit> logs = git.log().call();
+			for (RevCommit commit: logs) {
+				result.add(new LogEntry(commit));
+				if (--maxRecords == 0) break; 
+			}
+		} catch (IOException e) {
+			Log.e(TAG, "IO", e);
+		} catch (NoHeadException e) {
+			Log.e(TAG, "NoHead", e);
+		} catch (GitAPIException e) {
+			Log.e(TAG, "GitApi", e);
+		}
+		if (maxRecords > 0) {
+			result.trimToSize();
+		}
+		return result;
+	}
+	
+	/**
+	 * Log entry.
+	 * 
+	 * To be updated for more features.
+	 * 
+	 * @author Andrew Romanenco
+	 *
+	 */
+	public static class LogEntry {
+		
+		private RevCommit commit;
+		
+		private LogEntry(RevCommit commit) {
+			this.commit = commit;
+		}
+		
+		private static DateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+		
+		public String getText() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(commit.getAuthorIdent() != null ? commit.getAuthorIdent().getName(): "");
+			sb.append("\n");
+			Date date = new Date((long)commit.getCommitTime()*1000);
+			sb.append(format.format(date));
+			sb.append("\n");
+			sb.append(commit.getId().getName());
+			sb.append("\n");
+			sb.append("\n");
+			sb.append(commit.getFullMessage());
+			return sb.toString();
+		}
 	}
 
 }

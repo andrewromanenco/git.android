@@ -2,11 +2,9 @@
 <resources>
 
     <string name="app_name">Git</string>
-    
     <string name="action_clone">Clone&#8230;</string>
     <string name="action_delete">Delete</string>
     <string name="action_about">About&#8230;</string>
-    
     <string name="title_activity_clone">Clone GIT repo</string>
     <string name="edit_repo_name">Repo name</string>
     <string name="clone_address">http(s)://&#8230;</string>
@@ -23,7 +21,8 @@
     <string name="action_find">Find in source</string>
     <string name="action_pull_repo">Pull from origin</string>
     <string name="action_delete_repo">Delete local repo</string>
-    <string name="action_change_branch">Switch to &#8230;</string>
+    <string name="action_change_branch">Checkout &#8230;</string>
+    <string name="action_repo_log">Repo log</string>
     <string name="action_filter">Filter files</string>
     <string name="confirm_repo_delete">Delete repo from your device?</string>
     <string name="size_bytes">%d b</string>
@@ -34,16 +33,13 @@
     <string name="empty"></string>
     <string name="passwd_request">Provide password for %s</string>
     <string name="action_trace">Trace&#8230;</string>
-
     <string name="git_error_connect">Can\'t connect</string>
     <string name="git_error_not_git">Not a git repo</string>
     <string name="git_error_not_git_guess">Not a git repo. Try with .git at the url end.</string>
     <string name="git_error_auth">Authorization failed</string>
     <string name="git_error_generic">Failed. Check stack trace</string>
     <string name="git_error_head">Not in branch\nCheckout master first</string>
-
     <string name="no_repos_yet">Use menu to add GIT repo\nfor offline access</string>
-    
     <string name="title_activity_browser">BrowserActivity</string>
     <string name="title_activity_code_view">CodeViewActivity</string>
     <string name="username">User name</string>
@@ -58,5 +54,6 @@
     <string name="about_syntax">Syntax highlighting with http://alexgorbatchev.com/SyntaxHighlighter/</string>
     <string name="about_jgit">Git engine: JGit</string>
     <string name="about_logo">Git Logo by Jason Long</string>
+    <string name="title_activity_log_view">Log</string>
 
 </resources>

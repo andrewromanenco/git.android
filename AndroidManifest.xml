@@ -58,6 +58,10 @@
             android:name="com.romanenco.gitt.SyntaxPickActivity"
             android:label="@string/title_activity_syntax" >
         </activity>
+        <activity
+            android:name="com.romanenco.gitt.LogViewActivity"
+            android:label="@string/title_activity_log_view" >
+        </activity>
     </application>
 
 </manifest>

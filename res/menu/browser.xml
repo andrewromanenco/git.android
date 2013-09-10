@@ -11,6 +11,11 @@
         android:showAsAction="never"
         android:title="@string/action_change_branch"/>
     <item
+        android:id="@+id/browser_repo_log"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_repo_log"/>
+    <item
         android:id="@+id/browser_menu_pull"
         android:orderInCategory="100"
         android:showAsAction="never"

@@ -210,6 +210,11 @@ public class BrowserActivity extends ListActivity {
 		case R.id.browser_filter:
 			showFilterBar(true);
 			break;
+		case R.id.browser_repo_log:
+			Intent logView = new Intent(this, LogViewActivity.class);
+			logView.putExtra(LogViewActivity.REPO, current);
+			startActivity(logView);
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
