@@ -144,7 +144,7 @@ public class GitService extends IntentService {
 
 		Log.d(TAG, "Starting processing: " + repo.getName());
 
-		String path = this.getFilesDir().getPath() + "/" + repo.getFolder();
+		String path = GitHelper.getBaseRepoDir(this, repo.getFolder()).getPath() + "/" + repo.getFolder();
 		ProgressMonitor pm = new Progress(repo.getFolder());
 
 		try {
@@ -190,7 +190,7 @@ public class GitService extends IntentService {
 	 */
 	private void delete(Intent intent) {
 		Repo repo = (Repo) intent.getSerializableExtra(REPO);
-		String path = this.getFilesDir().getPath() + "/" + repo.getFolder();
+		String path = GitHelper.getBaseRepoDir(this, repo.getFolder()).getPath() + "/" + repo.getFolder();
 		try {
 			GitHelper.deleteRepo(path);
 		} catch (IOException e) {
@@ -207,7 +207,7 @@ public class GitService extends IntentService {
 	 */
 	private void checkout(Intent intent) {
 		Repo repo = (Repo) intent.getSerializableExtra(REPO);
-		String path = this.getFilesDir().getPath() + "/" + repo.getFolder();
+		String path = GitHelper.getBaseRepoDir(this, repo.getFolder()).getPath() + "/" + repo.getFolder();
 		String branchOrTag = intent.getStringExtra(SWITCH_TO);
 		try {
 			GitHelper.checkout(path, branchOrTag);
@@ -231,7 +231,7 @@ public class GitService extends IntentService {
 	 */
 	private void pull(Intent intent) {
 		Repo repo = (Repo) intent.getSerializableExtra(REPO);
-		String path = this.getFilesDir().getPath() + "/" + repo.getFolder();
+		String path = GitHelper.getBaseRepoDir(this, repo.getFolder()).getPath() + "/" + repo.getFolder();
 		ProgressMonitor pm = new Progress(repo.getFolder());
 		String passwd = intent.getStringExtra(AUTH_PASSWD);
 

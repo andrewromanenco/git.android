@@ -59,7 +59,7 @@ public class LogViewActivity extends Activity {
 		
 		textView = (TextView)findViewById(R.id.text_log);
 		textView.setMovementMethod(new ScrollingMovementMethod());
-		File repoDir = new File(this.getFilesDir(), current.getFolder());
+		File repoDir = new File(GitHelper.getBaseRepoDir(this, current.getFolder()), current.getFolder());
 		
 		new LogReaderTask().execute(repoDir);
 	}

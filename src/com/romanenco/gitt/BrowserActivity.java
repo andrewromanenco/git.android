@@ -148,7 +148,7 @@ public class BrowserActivity extends ListActivity {
 		int index = path.lastIndexOf("/");
 		if (index == -1) {
 			//reading branch name in main thread...
-			String branch = GitHelper.currentBranchName(this.getFilesDir() + "/" + current.getFolder()); 
+			String branch = GitHelper.currentBranchName(GitHelper.getBaseRepoDir(this, current.getFolder()) + "/" + current.getFolder()); 
 			this.setTitle("(" + branch + ")/.");
 		} else {
 			this.setTitle(".." + path.substring(index));
@@ -171,7 +171,7 @@ public class BrowserActivity extends ListActivity {
 			getListView().setAdapter(adapter);
 		} else {
 			Intent next = new Intent(this, CodeViewActivity.class);
-			File file = new File(this.getFilesDir(), current.getFolder());
+			File file = new File(GitHelper.getBaseRepoDir(this, current.getFolder()), current.getFolder());
 			file = new File(file, path);
 			file = new File(file, adapter.getItem(position));
 			next.putExtra(CodeViewActivity.FILE_KEY, file);
@@ -344,21 +344,23 @@ public class BrowserActivity extends ListActivity {
 			Log.d(TAG, "Reading: " + folder);
 			this.context = context;
 			browseCache.put(repo.getFolder(), folder);
-			File repoDir = new File(context.getFilesDir(), repo.getFolder());
+			File repoDir = new File(GitHelper.getBaseRepoDir(context, current.getFolder()), repo.getFolder());
 			File dir = new File(repoDir, folder);
-			File[] files = dir.listFiles();
-			Arrays.sort(files, NameFileComparator.NAME_COMPARATOR);
 			allItems = new ArrayList<Item>();
-			fileSizes = new HashMap<String, String>();
-			if (!folder.equals(".")) {
-				allItems.add(new Item("..", true));
-			}
-			for (File f: files) {
-				if (".git".equals(f.getName())) continue;
-				boolean isDir = f.isDirectory();
-				allItems.add(new Item(f.getName(), isDir));
-				if (!isDir) {
-					fileSizes.put(f.getName(), Utils.formatFileSize(BrowserActivity.this, f.length()));
+			if (dir.exists()) { // prevent crash if repo folder was deleted
+				File[] files = dir.listFiles();
+				Arrays.sort(files, NameFileComparator.NAME_COMPARATOR);
+				fileSizes = new HashMap<String, String>();
+				if (!folder.equals(".")) {
+					allItems.add(new Item("..", true));
+				}
+				for (File f: files) {
+					if (".git".equals(f.getName())) continue;
+					boolean isDir = f.isDirectory();
+					allItems.add(new Item(f.getName(), isDir));
+					if (!isDir) {
+						fileSizes.put(f.getName(), Utils.formatFileSize(BrowserActivity.this, f.length()));
+					}
 				}
 			}
 			filteredList = allItems;
