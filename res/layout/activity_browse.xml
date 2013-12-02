@@ -12,16 +12,15 @@
         android:id="@+id/filter_bar"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="#777777"
+        android:background="#111111"
         android:visibility="gone" >
 
-        <Button
+        <ImageButton
             android:id="@+id/filter_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="@string/x" />
+            android:contentDescription="@string/close"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:src="@drawable/filter_close" />
 
         <EditText
             android:id="@+id/filter_text"

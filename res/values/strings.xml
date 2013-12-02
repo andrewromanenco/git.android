@@ -55,5 +55,8 @@
     <string name="about_jgit">Git engine: JGit</string>
     <string name="about_logo">Git Logo by Jason Long</string>
     <string name="title_activity_log_view">Log</string>
+    <string name="close">Close</string>
+    <string name="find_next">&gt;</string>
+    <string name="find_prev">&lt;</string>
 
 </resources>

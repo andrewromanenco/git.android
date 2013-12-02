@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:text="@string/x" />
+            android:text="@string/find_next" />
         
         <Button
             android:id="@+id/finder_prev"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/finder_next"
-            android:text="@string/x" />
+            android:text="@string/find_prev" />
         
         <EditText
             android:id="@+id/finder_text"
