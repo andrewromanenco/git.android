@@ -95,7 +95,7 @@ public class CheckoutActivity extends ListActivity {
 			padding_px = (int) (padding_dp * scale + 0.5f);
 
 			list = new ArrayList<String>();
-			GitHelper.readBranchesAndTags(list, getFilesDir() + "/"
+			GitHelper.readBranchesAndTags(list, GitHelper.getBaseRepoDir(CheckoutActivity.this, repo.getFolder()) + "/"
 					+ repo.getFolder());
 		}
 

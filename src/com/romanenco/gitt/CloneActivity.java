@@ -188,7 +188,7 @@ public class CloneActivity extends Activity {
 		dao.open(true);
 		dao.delete(current.getFolder());
 		try {
-			GitHelper.deleteRepo(getFilesDir() + "/" + current.getFolder());
+			GitHelper.deleteRepo(GitHelper.getBaseRepoDir(this, current.getFolder()) + "/" + current.getFolder());
 		} catch (IOException e) {
 		} // no need to handle
 		dao.close();

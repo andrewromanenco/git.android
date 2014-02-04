@@ -47,6 +47,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
+import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.romanenco.gitt.GittApp;
@@ -311,6 +313,46 @@ public class GitHelper {
 			result.trimToSize();
 		}
 		return result;
+	}
+	
+	/**
+	 * Create base repository directory on SD card
+	 * 
+	 * @param Context context
+	 * @return File
+	 */
+	public static File getBaseRepoDir(Context context)
+	{
+		return getBaseRepoDir(context, "");
+	}
+	
+	/**
+	 * Create base repository directory on SD card
+	 * 
+	 * @param Context context
+	 * @param String repoDir
+	 * @return File
+	 */
+	public static File getBaseRepoDir(Context context, String repoDir)
+	{
+		if (repoDir != "") {
+			File internalStorage = new File(context.getFilesDir(), repoDir);
+			if (internalStorage.exists()) {
+				return context.getFilesDir();
+			}
+		}
+		File sdCardRoot = Environment.getExternalStorageDirectory();
+		File repoRoot = new File(sdCardRoot + "/gitt");
+		try {		
+			if (!repoRoot.exists() || !repoRoot.isDirectory()) {
+				if (!repoRoot.mkdirs()) {
+					throw new IOException("Could not create directory for repos.");
+				}
+			}
+		} catch (IOException e) {
+			Log.e(TAG, "IO", e);
+		}
+		return repoRoot;
 	}
 	
 	/**
